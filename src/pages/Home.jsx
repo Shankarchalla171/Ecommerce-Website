@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/navbar";
-import Categaory from "../components/catageroy";
+import Category from "../components/catageroy";
 import ProductCard from "../components/product-card";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/SideBar";
@@ -9,93 +9,178 @@ import { MenuContext } from "../context/MenuContext";
 const API_BASE = "https://api.escuelajs.co/api/v1";
 
 const Home = () => {
-    const [cat, setCat] = useState([]);
-    const [sample, setsample] = useState([]);
-    const { menu, setMenu } = useContext(MenuContext);
-    const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [sampleProducts, setSampleProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { menu, setMenu } = useContext(MenuContext);
+  const navigate = useNavigate();
 
-    const getSample = async () => {
-        try {
-            let promise = await fetch(`${API_BASE}/products?offset=0&limit=20`);
-            let response = await promise.json();
-            setsample(response);
-        } catch (error) {
-            console.log(error);
-        }
+  // Prevent background scrolling when sidebar is open
+  useEffect(() => {
+    if (menu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup function to reset overflow when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
     };
+  }, [menu]);
 
-    const getCategaory = async () => {
-        try {
-            let promise = await fetch(`${API_BASE}/categories`);
-            let response = await promise.json();
-            setCat(response);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+  const getSampleProducts = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/products?offset=0&limit=20`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setSampleProducts(Array.isArray(data) ? data : []);
+    } catch (error) {
+      throw new Error(`Failed to fetch products: ${error.message}`);
+    }
+  };
 
-    useEffect(() => {
-        getCategaory();
-        getSample();
-    }, []);
+  const getCategories = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/categories`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (error) {
+      throw new Error(`Failed to fetch categories: ${error.message}`);
+    }
+  };
 
-    const goToPage = () => {
-        navigate("/products");
-    };
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      await Promise.all([getCategories(), getSampleProducts()]);
+    } catch (error) {
+      setError(error.message || "Failed to load data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleMenuToggle = () => {
+    setMenu(prev => !prev);
+  };
+
+  const handleSidebarClick = (e) => {
+    e.stopPropagation();
+  };
+
+  const goToProductsPage = () => {
+    navigate("/products");
+  };
+
+  // Filter categories to show only first 5
+  const displayCategories = categories.filter(category => 
+    category && category.id && parseInt(category.id) <= 5
+  );
+
+  if (loading) {
     return (
-        <>
-            <Navbar />
-            <main className="flex relative min-h-screen bg-white">
-               
-                <aside
-                    className={`${
-                        menu ? "fixed inset-0 z-20 bg-white w-4/5 max-w-xs p-4 shadow-lg flex items-center" : "hidden"
-                    } `}
-                >
-                    <Sidebar />
-                </aside>
-
-                <section className="flex-1 w-full sm:ml-0">
-                    
-                    <section className="p-4 sm:p-6 md:p-8 flex justify-center items-center">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 bg-blue-100 p-4 rounded-xl w-full max-w-7xl">
-                            {cat.length > 0 ? (
-                                cat.map((cate) =>
-                                    cate.id <= "5" ? (
-                                        <Categaory cate={cate} key={cate.id} />
-                                    ) : null
-                                )
-                            ) : (
-                                <h2>No categories found</h2>
-                            )}
-                        </div>
-                    </section>
-
-                 
-                    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-12 p-4 sm:p-6 md:p-8">
-                        {sample.length > 0 &&
-                            sample.map((product) => (
-                                <ProductCard product={product} key={product.id} />
-                            ))}
-
-                       
-                        <div className="bg-amber-200 p-4 rounded flex justify-between items-center col-span-full">
-                            <span className="capitalize text-base sm:text-lg">View more products</span>
-                            <button
-                                onClick={goToPage}
-                                className="p-2 hover:bg-amber-300 rounded-full"
-                            >
-                                <span className="material-symbols-outlined text-amber-900">
-                                    chevron_right
-                                </span>
-                            </button>
-                        </div>
-                    </section>
-                </section>
-            </main>
-        </>
+      <>
+        <Navbar />
+        <main className="flex justify-center items-center min-h-screen bg-white">
+          <div className="text-lg text-gray-600">Loading...</div>
+        </main>
+      </>
     );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <main className="flex justify-center items-center min-h-screen bg-white">
+          <div className="text-lg text-red-600">Error: {error}</div>
+        </main>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Navbar />
+      <main className="flex relative min-h-screen bg-white">
+        {/* Sidebar Overlay */}
+        <aside
+          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${
+            menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={handleMenuToggle}
+        >
+          <div
+            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out overflow-y-auto ${
+              menu ? "translate-x-0" : "-translate-x-full"
+            }`}
+            onClick={handleSidebarClick}
+          >
+            <Sidebar />
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <section className="flex-1 w-full sm:ml-0">
+          {/* Categories Section */}
+          <section className="p-4 sm:p-6 md:p-8 flex justify-center items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 bg-blue-100 p-4 rounded-xl w-full max-w-7xl">
+              {displayCategories.length > 0 ? (
+                displayCategories.map((category) => (
+                  <Category cate={category} key={category.id} />
+                ))
+              ) : (
+                <div className="col-span-full text-center">
+                  <h2 className="text-gray-600">No categories found</h2>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Sample Products Section */}
+          <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-12 p-4 sm:p-6 md:p-8">
+            {sampleProducts.length > 0 &&
+              sampleProducts.map((product) => (
+                <ProductCard product={product} key={product.id} />
+              ))}
+
+            {/* View More Products Button */}
+            {sampleProducts.length > 0 && (
+              <div className="bg-amber-200 p-4 rounded flex justify-between items-center col-span-full">
+                <span className="capitalize text-base sm:text-lg">View more products</span>
+                <button
+                  onClick={goToProductsPage}
+                  className="p-2 hover:bg-amber-300 rounded-full transition-colors duration-200"
+                  aria-label="View more products"
+                >
+                  <span className="material-symbols-outlined text-amber-900">
+                    chevron_right
+                  </span>
+                </button>
+              </div>
+            )}
+          </section>
+        </section>
+      </main>
+    </>
+  );
 };
 
 export default Home;

@@ -1,19 +1,23 @@
 import React, { createContext, useReducer } from "react";
 import { cartReducer } from "../reducers/cartReducer";
 
-const initialState={
-    cart:[],
-}
+const initialState = {
+  cart: [],
+};
 
-export const cartContext=createContext();
- 
-const CartProvider=({children})=>{
-    const [ { cart }, cartDispatch ]=useReducer(cartReducer,initialState);
-   return(
-      <cartContext.Provider value={{cart,cartDispatch}}>
-        {children}
-      </cartContext.Provider>
-   )
-}
+export const CartContext = createContext();
 
-export default CartProvider
+// Add default value to prevent context errors
+CartContext.displayName = 'CartContext';
+
+const CartProvider = ({ children }) => {
+  const [{ cart }, cartDispatch] = useReducer(cartReducer, initialState);
+  
+  return (
+    <CartContext.Provider value={{ cart, cartDispatch }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export default CartProvider;

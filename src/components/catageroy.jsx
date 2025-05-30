@@ -1,15 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
-const Categaory = ({ cate: { id, name, image } }) => {
+const Category = ({ cate: { id, name, image } }) => {
   const navigate = useNavigate();
 
   const goToPage = () => {
-    navigate(`category-page/${id}`);
+    navigate(`/category-page/${id}`);
   };
 
   return (
     <div
-      key={id}
       className="relative flex justify-center items-center hover:scale-105 transition duration-200 cursor-pointer w-full max-w-xs mx-auto"
       onClick={goToPage}
     >
@@ -26,5 +25,4 @@ const Categaory = ({ cate: { id, name, image } }) => {
     </div>
   );
 };
-
-export default Categaory;
+export default Category

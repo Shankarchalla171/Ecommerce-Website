@@ -1,14 +1,18 @@
 import React, { createContext, useState } from "react";
 
-export const MenuContext=createContext();
+export const MenuContext = createContext();
 
-const MenuProvider=({children})=>{
-    const [menu, setMenu]=useState(false);
-    return(
-        <MenuContext.Provider value={{menu,setMenu}}>
-            {children}
-        </MenuContext.Provider>
-    )
-}
+// Add default value to prevent context errors
+MenuContext.displayName = 'MenuContext';
 
-export default MenuProvider
+const MenuProvider = ({ children }) => {
+  const [menu, setMenu] = useState(false);
+  
+  return (
+    <MenuContext.Provider value={{ menu, setMenu }}>
+      {children}
+    </MenuContext.Provider>
+  );
+};
+
+export default MenuProvider;

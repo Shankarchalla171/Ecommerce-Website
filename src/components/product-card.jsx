@@ -1,24 +1,25 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { cartContext } from "../context/CartContext";
-import { findProduct } from "../utilies/findproduct";
+import { CartContext } from "../context/CartContext";
+import { findProduct } from "../utilities/findproduct";
 import { WishListContext } from "../context/wishList";
+import { AuthContext } from "../context/AuthContext";
 
 const ProductCard = ({ product }) => {
   const { id, title, price, images } = product;
-
   const navigate = useNavigate();
-  const goToproduct = () => {
-    navigate(`/product-page/${id}`);
-  };
-
   const { wishList, setWishList } = useContext(WishListContext);
-  const { cart, cartDispatch } = useContext(cartContext);
+  const { cart, cartDispatch } = useContext(CartContext);
+  const {islogged}=useContext(AuthContext)
 
   const inCart = findProduct(cart, id);
   const inWishList = findProduct(wishList, id);
 
-  const addToWish = () => {
+  const goToProduct = () => {
+    navigate(`/product-page/${id}`);
+  };
+
+  const toggleWishList = () => {
     if (inWishList) {
       setWishList(wishList.filter((product) => product.id !== id));
     } else {
@@ -26,8 +27,10 @@ const ProductCard = ({ product }) => {
     }
   };
 
-  const addToCart = () => {
-    if (inCart) {
+  const handleCartAction = () => {
+    if(!islogged){
+       navigate('/login');
+    }else if (inCart) {
       navigate("/cart");
     } else {
       cartDispatch({
@@ -36,22 +39,22 @@ const ProductCard = ({ product }) => {
       });
     }
   };
+   
 
-  const out_wish =
-    "material-symbols-outlined absolute top-2 right-2 text-white text-2xl cursor-pointer";
-  const in_wish =
-    "material-icons absolute top-2 right-2 text-white text-2xl cursor-pointer";
+  const wishIconClass = inWishList
+    ? "material-icons absolute top-2 right-2 text-red-500 text-2xl cursor-pointer"
+    : "material-symbols-outlined absolute top-2 right-2 text-white text-2xl cursor-pointer";
 
   return (
     <div className="bg-amber-200 p-4 rounded-xl w-full max-w-sm hover:scale-[1.03] transform transition duration-200 shadow-md mx-auto">
       <div className="w-full aspect-square relative overflow-hidden rounded-xl">
         <img
-          src={images[0]}
+          src={Array.isArray(images) ? images[0] : images}
           alt={title}
           className="w-full h-full object-cover rounded-xl cursor-pointer"
-          onClick={goToproduct}
+          onClick={goToProduct}
         />
-        <span className={inWishList ? in_wish : out_wish} onClick={addToWish}>
+        <span className={wishIconClass} onClick={toggleWishList}>
           favorite
         </span>
       </div>
@@ -62,8 +65,8 @@ const ProductCard = ({ product }) => {
           ${parseFloat(price).toFixed(2)}
         </h1>
         <button
-          className="p-2 bg-zinc-100 mt-2 rounded-xl hover:bg-zinc-200 flex justify-center items-center gap-2 transition"
-          onClick={addToCart}
+          className="p-2 bg-zinc-100 mt-2 rounded-xl hover:bg-zinc-200 flex justify-center items-center gap-2 transition cursor-pointer"
+          onClick={handleCartAction}
         >
           <span className="material-symbols-outlined">
             {inCart ? "check_circle" : "add_shopping_cart"}
