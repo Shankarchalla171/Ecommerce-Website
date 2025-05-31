@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useEffect, useReducer } from "react";
 import { authReducer } from "../reducers/authReducer";
 
 const initialState = {
@@ -8,13 +8,22 @@ const initialState = {
   access_token: ''
 };
 
+function setInitialState(){
+  const storedSate=localStorage.getItem("state");
+  return storedSate?JSON.parse(storedSate):initialState;
+}
+
 export const AuthContext = createContext();
 
 // Add default value to prevent context errors
 AuthContext.displayName = 'AuthContext';
 
 const AuthProvider = ({ children }) => {
-  const [state, authDispatch] = useReducer(authReducer, initialState);
+  const [state, authDispatch] = useReducer(authReducer, setInitialState());
+
+  useEffect(()=>{
+    localStorage.setItem("state",JSON.stringify(state));
+  },[state]);
   
   return (
     <AuthContext.Provider value={{ ...state, authDispatch }}>
