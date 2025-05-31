@@ -23,7 +23,11 @@ function App() {
           </PrivateRoute>
         } />
         <Route path='/login' element={<LoginPage />} />
-        <Route path='/wishlist' element={<WishListPage />} />
+        <Route path='/wishlist' element={
+          <PrivateRoute>
+            <WishListPage />
+          </PrivateRoute>
+        } />
         <Route path='/category-page/:category_id' element={<Categoryporduct />} />
         <Route path='/product-page/:p_id' element={<ProductPage />} />
       </Routes>

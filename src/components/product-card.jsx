@@ -20,7 +20,9 @@ const ProductCard = ({ product }) => {
   };
 
   const toggleWishList = () => {
-    if (inWishList) {
+    if(!islogged){
+        navigate('/login');
+    }else  if (inWishList) {
       setWishList(wishList.filter((product) => product.id !== id));
     } else {
       setWishList([...wishList, product]);

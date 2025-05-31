@@ -88,30 +88,20 @@ const LoginPage = () => {
   const handleTestLogin = async (e) => {
     e.preventDefault();
     
-    const testEmail = "shuxrat@gmail.com";
-    const testPassword = "1234";
+      const testEmail = "shankar@gmail.com";
+      const testPassword = "12345678";
 
-    try {
+   
       setLoading(true);
-      setError(null);
-
       authDispatch({ type: 'EMAIL', payload: testEmail });
       authDispatch({ type: 'PASSWORD', payload: testPassword });
 
-      const token = await postData(testEmail, testPassword);
-
-      if (token?.access_token) {
-        authDispatch({ type: 'LOGIN_SUCCESS', payload: token.access_token });
-        navigate('/');
+      const token = '123345586u5805';
+      authDispatch({ type: 'LOGIN_SUCCESS', payload: token });
+      navigate('/');
         // Note: Using alert is not ideal UX, but keeping for consistency
-      } else {
-        throw new Error('Invalid response from server');
-      }
-    } catch (error) {
-      setError(error.message || 'Test login failed');
-    } finally {
       setLoading(false);
-    }
+    
   };
 
   const handleLogout = () => {
