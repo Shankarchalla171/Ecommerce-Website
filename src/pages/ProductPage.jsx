@@ -196,10 +196,18 @@ const ProductPage = () => {
           onClick={() => setMenu(prev => !prev)}
         >
           <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out
+            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex relative items-center transition-transform duration-300 ease-in-out
                  ${menu ? "translate-x-0" : "-translate-x-full"}`}
             onClick={(e) => e.stopPropagation()}
           >
+            <button
+              title="Go back"
+              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
+              onClick={() => setMenu(prev => !prev)}
+            >
+              <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+
             <Sidebar />
           </div>
         </aside>

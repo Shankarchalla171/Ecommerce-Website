@@ -18,22 +18,22 @@ const ProductsPage = () => {
 
     useEffect(() => {
         if (menu) {
-          document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
         } else {
-          document.body.style.overflow = 'unset';
+            document.body.style.overflow = 'unset';
         }
-        
+
         // Cleanup function to reset overflow when component unmounts
         return () => {
-          document.body.style.overflow = 'unset';
+            document.body.style.overflow = 'unset';
         };
-      }, [menu]);
+    }, [menu]);
 
     const getproducts = async () => {
         try {
             setLoading(true);
             setError(null);
-            
+
             let url = `${API_BASE}/products`;
             const params = new URLSearchParams();
 
@@ -50,26 +50,26 @@ const ProductsPage = () => {
             }
 
             const res = await fetch(url);
-            
+
             if (!res.ok) {
                 throw new Error(`Failed to fetch products: ${res.status} ${res.statusText}`);
             }
-            
+
             const data = await res.json();
-            
+
             // Validate response data
             if (!Array.isArray(data)) {
                 throw new Error('Invalid response format: expected array');
             }
-            
+
             // Filter out invalid products
-            const validProducts = data.filter(product => 
-                product && 
-                product.id && 
-                product.title && 
+            const validProducts = data.filter(product =>
+                product &&
+                product.id &&
+                product.title &&
                 product.price !== undefined
             );
-            
+
             setProducts(validProducts);
         } catch (error) {
             setError(error.message || 'Failed to load products');
@@ -82,19 +82,19 @@ const ProductsPage = () => {
     const getCategaory = async () => {
         try {
             const promise = await fetch(`${API_BASE}/categories`);
-            
+
             if (!promise.ok) {
                 throw new Error(`Failed to fetch categories: ${promise.status}`);
             }
-            
+
             const response = await promise.json();
-            
+
             // Validate and filter categories
             if (Array.isArray(response)) {
-                const validCategories = response.filter(cat => 
-                    cat && 
-                    cat.id && 
-                    cat.name && 
+                const validCategories = response.filter(cat =>
+                    cat &&
+                    cat.id &&
+                    cat.name &&
                     typeof cat.name === 'string'
                 );
                 setCat(validCategories);
@@ -112,7 +112,7 @@ const ProductsPage = () => {
         if (typeof id !== 'number' || id < 0) {
             return;
         }
-        
+
         window.scrollTo({ top: 0, behavior: "smooth" });
         setActiveCatID(id);
     };
@@ -144,7 +144,7 @@ const ProductsPage = () => {
         <div className="flex items-center justify-center col-span-full py-20">
             <div className="text-center">
                 <p className="text-red-600 text-lg mb-4">Error: {error}</p>
-                <button 
+                <button
                     onClick={() => getproducts()}
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                 >
@@ -161,13 +161,13 @@ const ProductsPage = () => {
                     inventory_2
                 </span>
                 <h1 className="text-lg font-semibold text-zinc-600">
-                    {search?.trim() 
-                        ? `No products found for "${search.trim()}"` 
+                    {search?.trim()
+                        ? `No products found for "${search.trim()}"`
                         : "No products available in the store"
                     }
                 </h1>
                 {search?.trim() && (
-                    <button 
+                    <button
                         onClick={() => setSearch('')}
                         className="px-4 py-2 bg-zinc-500 text-white rounded hover:bg-zinc-600 transition-colors"
                     >
@@ -189,10 +189,17 @@ const ProductsPage = () => {
                     onClick={() => setMenu(prev => !prev)}
                 >
                     <div
-                        className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out
+                        className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg relative flex items-center transition-transform duration-300 ease-in-out
                  ${menu ? "translate-x-0" : "-translate-x-full"}`}
                         onClick={(e) => e.stopPropagation()}
                     >
+                        <button
+                            title="Go back"
+                            className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
+                            onClick={() => setMenu(prev => !prev)}
+                        >
+                            <span className="material-symbols-outlined text-2xl">arrow_back</span>
+                        </button>
                         <Sidebar />
                     </div>
                 </aside>
@@ -233,7 +240,7 @@ const ProductsPage = () => {
                                     <h2 className="text-xl font-bold">Categories</h2>
                                 </div>
                                 <div className="flex flex-col gap-3">
-                                    <div 
+                                    <div
                                         key="0"
                                         className={`category-item text-base px-3 py-2 cursor-pointer bg-gradient-to-r from-zinc-200 transition-transform duration-200 hover:scale-102
                                         ${activeCatId === 0 ? 'border-l-4 border-zinc-700 scale-105 ml-1 bg-zinc-300' : 'hover:bg-zinc-250'}`}
@@ -251,7 +258,7 @@ const ProductsPage = () => {
                                     {cats && cats.length > 0 && cats
                                         .filter(cat => cat?.id && cat?.id <= 5)
                                         .map((cat) => (
-                                            <div 
+                                            <div
                                                 key={cat.id}
                                                 className={`category-item text-base px-3 py-2 cursor-pointer bg-gradient-to-r from-zinc-200 transition-transform duration-200 hover:scale-102
                                                 ${activeCatId === cat.id ? 'border-l-4 border-zinc-700 scale-105 ml-1 bg-zinc-300' : 'hover:bg-zinc-250'}`}
@@ -277,12 +284,12 @@ const ProductsPage = () => {
                             {loading && renderLoadingState()}
                             {error && !loading && renderErrorState()}
                             {!loading && !error && products.length === 0 && renderEmptyState()}
-                            {!loading && !error && products.length > 0 && 
+                            {!loading && !error && products.length > 0 &&
                                 products.map(product => (
                                     product?.id ? (
-                                        <ProductCard 
-                                            product={product} 
-                                            key={product.id} 
+                                        <ProductCard
+                                            product={product}
+                                            key={product.id}
                                         />
                                     ) : null
                                 ))

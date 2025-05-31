@@ -23,7 +23,7 @@ const Home = () => {
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     // Cleanup function to reset overflow when component unmounts
     return () => {
       document.body.style.overflow = 'unset';
@@ -33,11 +33,11 @@ const Home = () => {
   const getSampleProducts = async () => {
     try {
       const response = await fetch(`${API_BASE}/products?offset=0&limit=20`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setSampleProducts(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -48,11 +48,11 @@ const Home = () => {
   const getCategories = async () => {
     try {
       const response = await fetch(`${API_BASE}/categories`);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -64,7 +64,7 @@ const Home = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       await Promise.all([getCategories(), getSampleProducts()]);
     } catch (error) {
       setError(error.message || "Failed to load data");
@@ -90,7 +90,7 @@ const Home = () => {
   };
 
   // Filter categories to show only first 5
-  const displayCategories = categories.filter(category => 
+  const displayCategories = categories.filter(category =>
     category && category.id && parseInt(category.id) <= 5
   );
 
@@ -122,17 +122,23 @@ const Home = () => {
       <main className="flex relative min-h-screen bg-white">
         {/* Sidebar Overlay */}
         <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${
-            menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
+          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
           onClick={handleMenuToggle}
         >
           <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out overflow-y-auto ${
-              menu ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out overflow-y-auto relative ${menu ? "translate-x-0" : "-translate-x-full"
+              }`}
             onClick={handleSidebarClick}
           >
+            <button
+              title="Go back"
+              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
+               onClick={handleMenuToggle}
+            >
+              <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+
             <Sidebar />
           </div>
         </aside>

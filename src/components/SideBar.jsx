@@ -16,7 +16,7 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className="flex flex-col p-4 w-1/5 gap-10">
+    <nav className="flex flex-col p-4 gap-10">
       <NavLink to="/" className={getStyles} onClick={handleMenuToggle}>
         <span className="material-symbols-outlined">
           home

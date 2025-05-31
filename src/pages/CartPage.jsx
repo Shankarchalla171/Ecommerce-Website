@@ -49,11 +49,19 @@ const CartPage = () => {
           onClick={handleMenuToggle}
         >
           <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out overflow-y-auto ${
+            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg relative flex items-center transition-transform duration-300 ease-in-out overflow-y-auto ${
               menu ? "translate-x-0" : "-translate-x-full"
             }`}
             onClick={handleSidebarClick}
           >
+            <button
+              title="Go back"
+              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
+               onClick={handleMenuToggle}
+            >
+              <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            </button>
+
             <Sidebar />
           </div>
         </aside>
