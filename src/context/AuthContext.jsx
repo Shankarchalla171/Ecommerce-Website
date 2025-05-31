@@ -9,7 +9,7 @@ const initialState = {
 };
 
 function setInitialState(){
-  const storedSate=localStorage.getItem("state");
+  const storedSate=localStorage.getItem("Auth");
   return storedSate?JSON.parse(storedSate):initialState;
 }
 
@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
   const [state, authDispatch] = useReducer(authReducer, setInitialState());
 
   useEffect(()=>{
-    localStorage.setItem("state",JSON.stringify(state));
+    localStorage.setItem("Auth",JSON.stringify(state));
   },[state]);
   
   return (

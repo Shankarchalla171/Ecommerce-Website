@@ -1,9 +1,16 @@
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { cartReducer } from "../reducers/cartReducer";
+import { AuthContext } from "./AuthContext";
 
-function setInitialState(){
-  let storedSate=(localStorage.getItem("state"));
-  return storedSate?JSON.parse(storedSate):{cart:[]};
+
+
+function getstoredState(islogged){
+    if(!islogged){
+      return {cart:[]};
+    }else{
+       let storedSate=(localStorage.getItem("state"));
+     return storedSate?JSON.parse(storedSate):{cart:[]};
+    }   
 }
 
 
@@ -13,10 +20,30 @@ export const CartContext = createContext();
 CartContext.displayName = 'CartContext';
 
 const CartProvider = ({ children }) => {
-  const [state, cartDispatch] = useReducer(cartReducer, setInitialState());
+  
+  const {islogged}=useContext(AuthContext);
+  
+  const [state, cartDispatch] = useReducer(cartReducer, getstoredState(islogged));
+  
+
+  useEffect(()=>{
+    if(islogged){
+      cartDispatch({
+        type:'LOGIN',
+        payload:getstoredState(islogged),
+      })
+    }else{
+      cartDispatch({
+        type:'LOGOUT',
+      })
+    }
+  },[islogged])
+
  useEffect(()=>{
-  localStorage.setItem("state",JSON.stringify(state));
- },[state])
+  if(islogged){
+   localStorage.setItem("state",JSON.stringify(state));
+  }
+ },[state,islogged])
   
   return (
     <CartContext.Provider value={{ ...state, cartDispatch }}>

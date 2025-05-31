@@ -11,15 +11,15 @@ import MenuProvider from './context/MenuContext.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <CartProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <CartProvider>
           <WishListProvider>
             <MenuProvider>
               <App />
             </MenuProvider>
           </WishListProvider>
-        </AuthProvider>
-      </CartProvider>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

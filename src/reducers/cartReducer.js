@@ -26,6 +26,19 @@ export const cartReducer=(state,action)=>{
                 cart:state.cart.map((product)=>product.id===action.payload && product.quantity > 0 ? {...product,quantity:product.quantity-1}:product),
             }
         }
+        case 'LOGIN':{
+            return{
+                ...state,
+                cart:action.payload.cart,
+            }
+        }
+        break;
+        case 'LOGOUT':{
+            return{
+                ...state,
+                cart:[],
+            }
+        }
         default:
           return state
     }
