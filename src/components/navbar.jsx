@@ -4,16 +4,16 @@ import { AuthContext } from '../context/AuthContext';
 import { MenuContext } from '../context/MenuContext';
 const initialtheme = () => {
   const userPreference = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  // console.log(userPreference);
-
+  console.log(userPreference);
+  const stored_theme = localStorage.getItem("theme");
   if (userPreference) {
-    const stored_theme = localStorage.getItem("theme");
-    // console.log(stored_theme);
+    console.log(stored_theme);
     if (stored_theme && JSON.parse(stored_theme) === userPreference) {
       return true;
     }else 
       return stored_theme?JSON.parse(stored_theme):userPreference;
-  } else return false;
+  } else 
+      return stored_theme?JSON.parse(stored_theme):userPreference;
 }
 const Navbar = () => {
   const navigate = useNavigate();
