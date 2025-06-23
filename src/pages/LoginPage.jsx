@@ -21,7 +21,7 @@ const LoginPage = () => {
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     // Cleanup function to reset overflow when component unmounts
     return () => {
       document.body.style.overflow = 'unset';
@@ -59,7 +59,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
@@ -68,7 +68,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const token = await postData(email, password);
 
       if (token?.access_token) {
@@ -87,25 +87,26 @@ const LoginPage = () => {
 
   const handleTestLogin = async (e) => {
     e.preventDefault();
-    
-      const testEmail = "shankar@gmail.com";
-      const testPassword = "12345678";
 
-   
-      setLoading(true);
-      authDispatch({ type: 'EMAIL', payload: testEmail });
-      authDispatch({ type: 'PASSWORD', payload: testPassword });
+    const testEmail = "shankar@gmail.com";
+    const testPassword = "12345678";
 
-      const token = '123345586u5805';
-      authDispatch({ type: 'LOGIN_SUCCESS', payload: token });
-      navigate('/');
-        // Note: Using alert is not ideal UX, but keeping for consistency
-      setLoading(false);
-    
+
+    setLoading(true);
+    authDispatch({ type: 'EMAIL', payload: testEmail });
+    authDispatch({ type: 'PASSWORD', payload: testPassword });
+
+    const token = '123345586u5805';
+    authDispatch({ type: 'LOGIN_SUCCESS', payload: token });
+    navigate('/');
+    // Note: Using alert is not ideal UX, but keeping for consistency
+    setLoading(false);
+
   };
 
   const handleLogout = () => {
     authDispatch({ type: 'LOGOUT' });
+    navigate('/');
     setError(null);
     // Note: Using alert is not ideal UX, but keeping for consistency
   };
@@ -121,102 +122,94 @@ const LoginPage = () => {
   return (
     <>
       <Navbar />
-      <main className="w-full flex justify-center p-4 min-h-screen">
+      <main className="w-full flex justify-center p-4 min-h-screen  dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
         {/* Sidebar Overlay */}
-        <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${
-            menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-          onClick={handleMenuToggle}
-        >
-          <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center relative transition-transform duration-300 ease-in-out overflow-y-auto ${
-              menu ? "translate-x-0" : "-translate-x-full"
-            }`}
-            onClick={handleSidebarClick}
-          >
-            <button
-              title="Go back"
-              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-               onClick={handleMenuToggle}
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </button>
-            
-            <Sidebar />
-          </div>
-        </aside>
+        <Sidebar />
 
         {/* Login Form */}
-        <div className="w-full max-w-md bg-zinc-100 p-6  h-max rounded-2xl shadow-lg mt-10 flex flex-col">
-          <form className="flex flex-col gap-6" onSubmit={islogged ? handleLogout : handleLogin}>
-            <h1 className="text-2xl md:text-3xl font-bold text-center underline">
-              {islogged ? 'Log Out' : 'Log In'}
-            </h1>
+        <div className="w-full max-w-md mx-auto mt-20 px-4 sm:px-6">
+          <div className="bg-white dark:bg-[#1f1d2b] dark:border-1 dark:border-violet-800 border border-zinc-200 shadow-xl rounded-3xl p-10 sm:p-12 transition-all duration-500 ease-in-out">
 
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                {error}
+            <form onSubmit={islogged ? handleLogout : handleLogin} className="space-y-8">
+              <div className="space-y-1">
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-zinc-900 dark:text-gray-300 tracking-tight transition-all duration-500 ease-in-out">
+                  {islogged ? "Welcome Back!" : "Sign In"}
+                </h2>
+                <p className="text-center text-sm text-zinc-500 dark:text-gray-400 transition-all duration-500 ease-in-out">
+                  {islogged ? "You're already logged in." : "Access your account to continue"}
+                </p>
               </div>
-            )}
 
-            {!islogged && (
-              <>
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="email" className="font-medium">Email</label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email || ''}
-                    placeholder="Enter your email..."
-                    onChange={handleEmailChange}
-                    disabled={loading}
-                    className="p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    required
-                  />
+              {/* Error Alert */}
+              {error && (
+                <div className="text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg p-3">
+                  {error}
                 </div>
+              )}
 
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="password" className="font-medium">Password</label>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password || ''}
-                    placeholder="Enter your password..."
-                    onChange={handlePasswordChange}
-                    disabled={loading}
-                    className="p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    required
-                  />
+              {!islogged && (
+                <div className="space-y-6">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-zinc-700 dark:text-gray-300 transition-all duration-500 ease-in-out">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={email || ""}
+                      onChange={handleEmailChange}
+                      disabled={loading}
+                      placeholder="you@example.com"
+                      className="mt-1 block w-full px-4 py-3 rounded-xl border border-zinc-300 focus:border-amber-400 focus:ring-amber-400 shadow-sm placeholder:text-zinc-400 text-zinc-800 bg-zinc-50 disabled:bg-zinc-100 disabled:cursor-not-allowed"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className="block text-sm font-medium text-zinc-700 dark:text-gray-300 transition-all duration-500 ease-in-out">
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      value={password || ""}
+                      onChange={handlePasswordChange}
+                      disabled={loading}
+                      placeholder="••••••••"
+                      className="mt-1 block w-full px-4 py-3 rounded-xl border border-zinc-300 focus:border-amber-400 focus:ring-amber-400 shadow-sm placeholder:text-zinc-400 text-zinc-800 bg-zinc-50 disabled:bg-zinc-100 disabled:cursor-not-allowed"
+                      required
+                    />
+                  </div>
                 </div>
-              </>
-            )}
+              )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className={`font-semibold py-2 px-4 rounded-lg transition-all ${
-                islogged 
-                  ? 'bg-red-500 hover:bg-red-600 text-white' 
-                  : 'bg-amber-400 hover:bg-amber-500 text-white'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              {loading ? 'Processing...' : (islogged ? 'Log Out' : 'Log In')}
-            </button>
+              <div className="space-y-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full py-3 px-6 text-base font-semibold rounded-xl transition-colors duration-300 shadow-sm ${islogged
+                      ? "bg-red-500 hover:bg-red-600 text-white dark:text-gray-300"
+                      : "bg-amber-400 hover:bg-amber-500 text-white dark:text-gray-300"
+                    } disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-500 ease-in-out`}
+                >
+                  {loading ? "Processing..." : islogged ? "Log Out" : "Log In"}
+                </button>
 
-            {!islogged && (
-              <button
-                type="button"
-                onClick={handleTestLogin}
-                disabled={loading}
-                className="bg-zinc-300 hover:bg-zinc-400 text-black font-medium py-2 px-4 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Processing...' : 'Log In with Test Credentials'}
-              </button>
-            )}
-          </form>
+                {!islogged && (
+                  <button
+                    type="button"
+                    onClick={handleTestLogin}
+                    disabled={loading}
+                    className="w-full py-3 px-6 text-base font-medium rounded-xl border border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed "
+                  >
+                    {loading ? "Processing..." : "Log In with Test Credentials"}
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
+
       </main>
     </>
   );

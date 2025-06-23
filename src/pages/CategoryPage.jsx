@@ -98,31 +98,9 @@ const CategoryProduct = () => {
   return (
     <>
       <Navbar />
-      <main className="flex relative min-h-screen bg-white justify-center">
+      <main className="flex relative min-h-screen bg-white justify-center dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
         {/* Sidebar Overlay */}
-        <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${
-            menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-          onClick={handleMenuToggle}
-        >
-          <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center relative transition-transform duration-300 ease-in-out overflow-y-auto ${
-              menu ? "translate-x-0" : "-translate-x-full"
-            }`}
-            onClick={handleSidebarClick}
-          >
-            <button
-              title="Go back"
-              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-               onClick={handleMenuToggle}
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </button>
-
-            <Sidebar />
-          </div>
-        </aside>
+        <Sidebar />
 
         {/* Products Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-12 p-4 sm:p-6 md:p-8 w-full max-w-7xl">

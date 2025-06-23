@@ -74,15 +74,11 @@ const ProductPage = () => {
     if (!params?.p_id) return;
 
     try {
-      const res = await fetch(`${API_BASE}/products?limit=8`);
+      const res = await fetch(`${API_BASE}/products/${params.p_id}/related`);
       
       if (res.ok) {
         const data = await res.json();
-        // Filter out current product and limit to 4 related items
-        const filteredData = Array.isArray(data) 
-          ? data.filter(item => item?.id && item.id !== parseInt(params.p_id)).slice(0, 4)
-          : [];
-        setRelated(filteredData);
+        setRelated(data);
       }
     } catch (error) {
       // Silently fail for related products as they're not critical
@@ -156,9 +152,9 @@ const ProductPage = () => {
     return (
       <>
         <Navbar />
-        <main className="flex relative min-h-screen bg-white">
+        <main className="flex relative min-h-screen bg-white dark:bg-[rgb(20,20,20)]">
           <div className="flex-1 w-full flex items-center justify-center">
-            <div className="text-xl">Loading...</div>
+            <div className="text-xl dark:text-gray-300">Loading...</div>
           </div>
         </main>
       </>
@@ -189,32 +185,12 @@ const ProductPage = () => {
   return (
     <>
       <Navbar />
-      <main className="flex relative min-h-screen bg-white">
-        <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300
-                      ${menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-          onClick={() => setMenu(prev => !prev)}
-        >
-          <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex relative items-center transition-transform duration-300 ease-in-out
-                 ${menu ? "translate-x-0" : "-translate-x-full"}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              title="Go back"
-              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-              onClick={() => setMenu(prev => !prev)}
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </button>
-
-            <Sidebar />
-          </div>
-        </aside>
+      <main className="flex relative min-h-screen bg-white dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
+        <Sidebar />
 
         <section className="flex-1 w-full sm:ml-0">
           <div className="w-full flex justify-center p-2">
-            <section className="w-full max-w-6xl bg-zinc-100 mt-10 flex flex-col md:flex-row gap-6 md:gap-8 p-4 md:p-10 rounded-xl border-1">
+            <section className="w-full max-w-6xl bg-zinc-100 mt-10 flex flex-col md:flex-row gap-6 md:gap-8 p-4 md:p-10 rounded-xl border-1 dark:bg-[rgb(31,31,31)] dark:border-1 dark:border-gray-300 transition-all duration-500 ease-in-out">
               {/* Images Section */}
               <div className="flex flex-col md:flex-row md:w-1/2 gap-4">
                 {product?.images && Array.isArray(product.images) && product.images.length > 0 && (
@@ -251,9 +227,9 @@ const ProductPage = () => {
               </div>
 
               {/* Product Details */}
-              <div className="bg-amber-50 p-4 flex flex-col gap-5 md:w-1/2 rounded-2xl">
+              <div className="bg-amber-50 p-4 flex flex-col gap-5 md:w-1/2 rounded-2xl dark:bg-transparent">
                 {product?.title && (
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold dark:text-gray-300 transition-all duration-500 ease-in-out">
                     {product.title}
                   </h1>
                 )}
@@ -265,14 +241,14 @@ const ProductPage = () => {
                 )}
 
                 {product?.description && (
-                  <p className="text-sm sm:text-base md:text-lg">
+                  <p className="text-sm sm:text-base md:text-lg dark:text-gray-300 transition-all duration-500 ease-in-out">
                     {product.description}
                   </p>
                 )}
 
                 {product?.price !== undefined && product?.price !== null && (
                   <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center px-2 mt-4">
-                    <span className="text-lg sm:text-xl md:text-2xl font-bold">
+                    <span className="text-lg sm:text-xl md:text-2xl font-bold dark:text-cyan-300 transition-all duration-500 ease-in-out">
                       ${parseFloat(product.price || 0).toFixed(2)}
                     </span>
 
@@ -316,7 +292,9 @@ const ProductPage = () => {
           {/* Related Products */}
           {related && related.length > 0 && (
             <div className="m-4 mt-8">
-              <h2 className="text-xl sm:text-2xl mb-4">Related Products:</h2>
+              <h2 className="text-xl sm:text-2xl mb-4 dark:text-gray-300 transition-all duration-500 ease-in-out">
+                Related Products:
+              </h2>
               <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
                 {related.map((relatedProduct) => (
                   relatedProduct?.id ? (

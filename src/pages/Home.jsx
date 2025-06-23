@@ -32,7 +32,7 @@ const Home = () => {
 
   const getSampleProducts = async () => {
     try {
-      const response = await fetch(`${API_BASE}/products?offset=0&limit=20`);
+      const response = await fetch(`${API_BASE}/products?offset=0&limit=8`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -98,8 +98,8 @@ const Home = () => {
     return (
       <>
         <Navbar />
-        <main className="flex justify-center items-center min-h-screen bg-white">
-          <div className="text-lg text-gray-600">Loading...</div>
+        <main className="flex justify-center items-center min-h-screen bg-white dark:bg-[rgb(20,20,20)]">
+          <div className="text-lg text-gray-600 dark:text-gray-300">Loading...</div>
         </main>
       </>
     );
@@ -119,35 +119,15 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <main className="flex relative min-h-screen bg-white">
+      <main className="flex relative min-h-screen bg-white dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
         {/* Sidebar Overlay */}
-        <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-            }`}
-          onClick={handleMenuToggle}
-        >
-          <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg flex items-center transition-transform duration-300 ease-in-out overflow-y-auto relative ${menu ? "translate-x-0" : "-translate-x-full"
-              }`}
-            onClick={handleSidebarClick}
-          >
-            <button
-              title="Go back"
-              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-               onClick={handleMenuToggle}
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </button>
-
-            <Sidebar />
-          </div>
-        </aside>
+        <Sidebar />
 
         {/* Main Content */}
         <section className="flex-1 w-full sm:ml-0">
           {/* Categories Section */}
           <section className="p-4 sm:p-6 md:p-8 flex justify-center items-center">
-            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 bg-blue-100 p-4 rounded-xl w-full max-w-7xl">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 bg-blue-100 p-4 rounded-xl w-full max-w-7xl dark:bg-transparent transition-all duration-500 ease-in-out">
               {displayCategories.length > 0 ? (
                 displayCategories.map((category) => (
                   <Category cate={category} key={category.id} />
@@ -169,8 +149,8 @@ const Home = () => {
 
             {/* View More Products Button */}
             {sampleProducts.length > 0 && (
-              <div className="bg-amber-200 p-4 rounded flex justify-between items-center col-span-full">
-                <span className="capitalize text-base sm:text-lg">View more products</span>
+              <div className="bg-gradient-to-r from-indigo-200 via-violet-100 to-blue-200  p-4 rounded flex justify-between items-center col-span-full dark:bg-transparent dark:text-gray-300 dark:border-1 transition-all duration-500 ease-in-out">
+                <span className="capitalize font-semibold text-base sm:text-lg text-indigo-900">View more products</span>
                 <button
                   onClick={goToProductsPage}
                   className="p-2 hover:bg-amber-300 rounded-full transition-colors duration-200"

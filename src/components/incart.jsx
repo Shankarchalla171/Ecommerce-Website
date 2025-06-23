@@ -32,7 +32,7 @@ const CartCard = ({ product }) => {
     })
   }
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-center bg-zinc-100 p-4 rounded-lg shadow-md w-full">
+    <div className="flex flex-col sm:flex-row gap-4 items-center bg-zinc-100 p-4 rounded-lg shadow-md w-full dark:bg-[rgb(45,44,44)]">
       {/* Product Image */}
       <div
         className="w-full sm:w-[200px] flex justify-center sm:justify-start cursor-pointer"
@@ -47,13 +47,14 @@ const CartCard = ({ product }) => {
 
       {/* Product Details */}
       <div className="flex flex-col text-center sm:text-left gap-2">
-        <h1 className="text-lg sm:text-xl font-semibold">{title}</h1>
-        <h2 className="text-lg sm:text-xl font-bold text-indigo-700">
+        <h1 className="text-lg sm:text-xl font-semibold dark:text-gray-300">{title}</h1>
+        <h2 className="text-lg sm:text-xl font-bold text-indigo-700 dark:text-cyan-300">
           ${parseFloat(price).toFixed(2)}
         </h2>
         <div className="flex flex-col items-center sm:flex-row sm:gap-7 ">
           <button
-            className="mt-2 py-2 px-4 bg-zinc-200 rounded-2xl hover:bg-zinc-300 transition-colors text-sm sm:text-base font-semibold w-max cursor-pointer flex items-center gap-4"
+            className="mt-2 py-2 px-4 bg-zinc-200 rounded-2xl hover:bg-zinc-300 transition-colors text-sm sm:text-base font-semibold w-max cursor-pointer flex items-center gap-4
+             dark:bg-[#703BF7] dark:text-white dark:hover:bg-[#472399]"
           >
             <span class="material-symbols-outlined"
                onClick={handleDecrement}
@@ -69,7 +70,7 @@ const CartCard = ({ product }) => {
           </button>
           <button
             onClick={handleRemove}
-            className="mt-2 py-2 px-4 bg-zinc-200 rounded-2xl hover:bg-zinc-300 transition-colors text-sm sm:text-base font-semibold w-max cursor-pointer"
+            className="mt-2 py-2 px-4 bg-zinc-200 rounded-2xl hover:bg-zinc-300 transition-colors text-sm sm:text-base font-semibold w-max cursor-pointer dark:bg-[#703BF7] dark:text-white dark:hover:bg-[#472399]"
           >
             Remove from cart
           </button>

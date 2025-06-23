@@ -9,7 +9,7 @@ import { MenuContext } from "../context/MenuContext";
 const CartPage = () => {
   const { cart } = useContext(CartContext);
   const { menu, setMenu } = useContext(MenuContext);
-  
+
   // Calculate total price with error handling
   const totalPrice = cart && cart.length > 0 ? PriceFinder(cart) : 0;
   const deliveryCharges = 29.00;
@@ -22,7 +22,7 @@ const CartPage = () => {
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     // Cleanup function to reset overflow when component unmounts
     return () => {
       document.body.style.overflow = 'unset';
@@ -40,38 +40,15 @@ const CartPage = () => {
   return (
     <>
       <Navbar />
-      <main className="flex relative min-h-screen bg-white">
+      <main className="flex relative min-h-screen bg-white dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
         {/* Sidebar Overlay */}
-        <aside
-          className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300 ${
-            menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-          }`}
-          onClick={handleMenuToggle}
-        >
-          <div
-            className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg relative flex items-center transition-transform duration-300 ease-in-out overflow-y-auto ${
-              menu ? "translate-x-0" : "-translate-x-full"
-            }`}
-            onClick={handleSidebarClick}
-          >
-            <button
-              title="Go back"
-              className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-               onClick={handleMenuToggle}
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </button>
-
-            <Sidebar />
-          </div>
-        </aside>
-
+        <Sidebar />
         {/* Main Content */}
-        <section className="w-full min-h-screen px-4 py-8 flex justify-center bg-white">
+        <section className="w-full min-h-screen px-4 py-8 flex justify-center bg-white dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
           <div className="w-full max-w-5xl flex flex-col gap-6">
             {/* Cart Items Section */}
-            <section className="w-full border p-4 rounded-xl shadow-md">
-              <h2 className="text-xl font-semibold mb-4 text-center sm:text-left">
+            <section className="w-full border p-4 rounded-xl shadow-md dark:border-violet-800 transition-all duration-500 ease-in-out ">
+              <h2 className="text-xl font-semibold mb-4 text-center sm:text-left dark:text-gray-300 transition-all duration-500 ease-in-out">
                 Your Cart
               </h2>
               <div className="flex flex-col gap-4">
@@ -87,32 +64,38 @@ const CartPage = () => {
 
             {/* Checkout Section */}
             {cart && cart.length > 0 && (
-              <section className="w-full flex flex-col items-center p-4 rounded-xl">
-                <div className="bg-amber-100 p-4 rounded-xl shadow-md">
-                  <h2 className="text-xl font-semibold text-center sm:text-left mb-3">
+              <section className="w-full flex flex-col items-center p-4 sm:p-6">
+                <div className="w-full max-w-md bg-white dark:bg-[#1f1d2b] rounded-2xl shadow-xl border border-gray-200 dark:border-violet-800 p-6 
+                transition-all duration-500 ease-in-out">
+
+                  <h2 className="text-2xl font-bold text-center sm:text-left mb-5 text-gray-800 dark:text-slate-100 transition-all duration-500 ease-in-out">
                     Checkout
                   </h2>
-                  <div className="flex flex-col gap-2 text-base">
-                    <span>
-                      Total price of products:{" "}
+
+                  <div className="space-y-3 text-gray-700 dark:text-gray-300 text-base transition-all duration-500 ease-in-out">
+                    <div className="flex justify-between">
+                      <span>Total price of products:</span>
                       <strong>${parseFloat(totalPrice).toFixed(2)}</strong>
-                    </span>
-                    <span>
-                      Delivery charges:{" "}
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Delivery charges:</span>
                       <strong>${deliveryCharges.toFixed(2)}</strong>
-                    </span>
-                    <span>
-                      Final amount:{" "}
+                    </div>
+                    <div className="flex justify-between text-lg font-semibold text-gray-900 dark:text-slate-100 mt-2 transition-all duration-500 ease-in-out">
+                      <span>Final amount:</span>
                       <strong>${parseFloat(finalAmount).toFixed(2)}</strong>
-                    </span>
+                    </div>
                   </div>
-                  <div className="flex justify-center sm:justify-start mt-4">
-                    <button className="px-4 py-2 bg-zinc-200 rounded-xl hover:bg-zinc-300 transition-all hover:cursor-pointer">
+
+                  <div className="mt-6 flex justify-center ">
+                    <button className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold  shadow-md hover:shadow-lg transition-all duration-500 ease-in-out">
                       Proceed to Payment
                     </button>
                   </div>
+
                 </div>
               </section>
+
             )}
           </div>
         </section>

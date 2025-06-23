@@ -15,6 +15,7 @@ const ProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { menu, setMenu } = useContext(MenuContext);
+    const [sort, setSort] = useState("default");
 
     useEffect(() => {
         if (menu) {
@@ -70,6 +71,12 @@ const ProductsPage = () => {
                 product.price !== undefined
             );
 
+            if (sort !== "default") {
+                console.log(sort);
+                validProducts.sort((a, b) =>
+                    sort === "increase" ? a.price - b.price : b.price - a.price
+                );
+            }
             setProducts(validProducts);
         } catch (error) {
             setError(error.message || 'Failed to load products');
@@ -121,6 +128,30 @@ const ProductsPage = () => {
         const value = e?.target?.value || '';
         setSearch(value);
     };
+
+    const handleClick = () => {
+        document.querySelector(".happy").classList.toggle('opacity-0');
+        document.querySelector(".happy").classList.toggle('opacity-100');
+        document.querySelector(".happy").classList.toggle('w-0');
+        document.querySelector(".happy").classList.toggle('lg:w-1/5');
+        document.querySelector(".happy").classList.toggle('w-full');
+        document.querySelector(".happy").classList.toggle('h-0');
+
+        //   document.querySelector(".happy").classList.toggle('translate-x-0');
+        //   document.querySelector(".happy").classList.toggle('-translate-x-full');
+        //   document.querySelector(".happy").classList.toggle('hidden');
+    }
+
+    useEffect(() => {
+        if (sort === 'default')
+            getproducts();
+        else {
+            const sorted = [...products].sort((a, b) =>
+                sort === "increase" ? a.price - b.price : b.price - a.price
+            );
+            setProducts(sorted);
+        }
+    }, [sort])
 
     useEffect(() => {
         getCategaory();
@@ -181,59 +212,52 @@ const ProductsPage = () => {
     return (
         <>
             <Navbar />
-            <main className="flex relative min-h-screen bg-white">
+            <main className="flex relative min-h-screen bg-white dark:bg-[rgb(20,20,20)] transition-all duration-500 ease-in-out">
                 {/* Mobile Sidebar Overlay */}
-                <aside
-                    className={`fixed top-0 left-0 z-20 w-full h-screen bg-[#f7f3f337] transition-opacity duration-300
-                      ${menu ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-                    onClick={() => setMenu(prev => !prev)}
-                >
-                    <div
-                        className={`w-4/5 max-w-[320px] h-full p-4 bg-amber-50 shadow-lg relative flex items-center transition-transform duration-300 ease-in-out
-                 ${menu ? "translate-x-0" : "-translate-x-full"}`}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            title="Go back"
-                            className="p-2 rounded-full absolute top-0 right-0 hover:cursor-pointer z-20"
-                            onClick={() => setMenu(prev => !prev)}
-                        >
-                            <span className="material-symbols-outlined text-2xl">arrow_back</span>
-                        </button>
-                        <Sidebar />
-                    </div>
-                </aside>
+                <Sidebar />
 
                 <section className="flex-1 w-full sm:ml-0">
                     {/* Search Bar */}
-                    <div className="bg-zinc-100 px-4 py-3 flex items-center gap-3 rounded-xl shadow-md mx-4 mt-4 lg:mx-20 sticky top-0 z-10">
-                        <span className="material-symbols-outlined text-zinc-600 text-2xl">
-                            search
-                        </span>
-                        <input
-                            type="text"
-                            placeholder="Search for items..."
-                            value={search}
-                            onChange={handleSearchChange}
-                            className="p-3 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 bg-white text-zinc-700"
-                            maxLength={100}
-                        />
-                        {search?.trim() && (
-                            <button
-                                onClick={() => setSearch('')}
-                                className="material-symbols-outlined text-zinc-500 hover:text-zinc-700 transition-colors cursor-pointer"
-                                title="Clear search"
-                            >
-                                close
+
+                    <div className=" flex  sm:flex-row sm:items-center gap-2 mb-7 mr-2"  >
+                        <div className="mt-4 border-r-2 border-t-2 border-b-2 py-2 px-1 rounded-r-xl">
+                            <button onClick={handleClick} className=" flex items-center gap-1 hover:cursor-pointer ">
+                                <span className="material-symbols-outlined dark:text-cyan-300">
+                                    discover_tune
+                                </span>
+                                <span className="text-xl dark:text-cyan-300 hidden sm:inline">Filters</span>
                             </button>
-                        )}
+                        </div>
+                        <div className="flex items-center gap-3 rounded-xl shadow-md px-3 py-2  mt-4  bg-zinc-100  dark:border-2 dark:border-violet-800 dark:bg-transparent w-full ">
+                            <span className="material-symbols-outlined text-zinc-600 text-2xl dark:text-violet-500">
+                                search
+                            </span>
+                            <input
+                                type="text"
+                                placeholder="Search for items..."
+                                value={search}
+                                onChange={handleSearchChange}
+                                className="p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 bg-white text-zinc-700"
+                                maxLength={100}
+                            />
+                            {search?.trim() && (
+                                <button
+                                    onClick={() => setSearch('')}
+                                    className="material-symbols-outlined text-zinc-500 hover:text-zinc-700 transition-colors cursor-pointer"
+                                    title="Clear search"
+                                >
+                                    close
+                                </button>
+                            )}
+                        </div>
+
                     </div>
 
-                    <section className="flex flex-col lg:flex-row p-4 gap-6 mt-10 mb-10">
+                    <section className=" flex flex-col lg:flex-row px-4 mt-6 pb-4 gap-6  mb-10 relative">
                         {/* Categories Sidebar */}
-                        <div className="w-full lg:w-1/5">
-                            <div className="flex flex-col gap-3 border p-4 rounded-xl sticky top-[100px]">
-                                <div className="flex gap-2 items-center">
+                        <div className=" w-0 h-0 happy opacity-0 transition-all duration-300 ">
+                            <div className="flex flex-col gap-3 border-r border-t border-b py-4 px-4 rounded-r-xl sticky top-[100px] dark:border-r-3 dark:border-t-3 dark:border-b-3 dark:border-r-violet-800 dark:border-t-violet-800  dark:border-b-violet-800">
+                                <div className="flex gap-2 items-center  dark:text-gray-300">
                                     <span className="material-symbols-outlined">
                                         category
                                     </span>
@@ -275,6 +299,31 @@ const ProductsPage = () => {
                                             </div>
                                         ))
                                     }
+                                    <div>
+                                        <label htmlFor="sort" className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+                                            SORT BY:
+                                        </label>
+
+                                        <div className="relative">
+                                            <select
+                                                name="filter"
+                                                id="sort"
+                                                className="block w-full appearance-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 pr-10 text-gray-900 dark:text-gray-100 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500 transition-all"
+                                                onChange={(e) => setSort(e.target.value)}
+                                            >
+                                                <option value="default">Default</option>
+                                                <option value="increase">Increase</option>
+                                                <option value="decrease">Decrease</option>
+                                            </select>
+
+                                            {/* Chevron icon */}
+                                            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400 dark:text-gray-300">
+                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
