@@ -280,7 +280,6 @@ const ProductsPage = () => {
                                         All
                                     </div>
                                     {cats && cats.length > 0 && cats
-                                        .filter(cat => cat?.id && cat?.id <= 5)
                                         .map((cat) => (
                                             <div
                                                 key={cat.id}

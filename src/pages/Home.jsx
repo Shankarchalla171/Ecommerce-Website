@@ -90,9 +90,12 @@ const Home = () => {
   };
 
   // Filter categories to show only first 5
-  const displayCategories = categories.filter(category =>
-    category && category.id && parseInt(category.id) <= 5
-  );
+  // const displayCategories = categories.filter(category =>
+  //   category && category.id && parseInt(category.id) <= 5
+  // );
+  
+  // console.log(categories);
+  // console.log(displayCategories);
 
   if (loading) {
     return (
@@ -128,8 +131,8 @@ const Home = () => {
           {/* Categories Section */}
           <section className="p-4 sm:p-6 md:p-8 flex justify-center items-center">
             <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 bg-blue-100 p-4 rounded-xl w-full max-w-7xl dark:bg-transparent transition-all duration-500 ease-in-out">
-              {displayCategories.length > 0 ? (
-                displayCategories.map((category) => (
+              {categories.length > 0 ? (
+                categories.map((category) => (
                   <Category cate={category} key={category.id} />
                 ))
               ) : (
