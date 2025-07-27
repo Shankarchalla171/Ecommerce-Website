@@ -9,6 +9,7 @@ import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import WishListPage from './pages/WishlistPage'
 import PrivateRoute from './routes/PrivateRoute'
+import SignUp from './pages/SignUpPage'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
           </PrivateRoute>
         } />
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/signin' element={<SignUp/>}/>
         <Route path='/wishlist' element={
           <PrivateRoute>
             <WishListPage />

@@ -12,6 +12,18 @@ export const authReducer=(state,action)=>{
                 password:action.payload,
             }
         }
+        case 'NAME':{
+            return{
+                ...state,
+                name:action.payload,
+            }
+        }
+        case 'PHOTO':{
+            return {
+                ...state,
+                photo:action.payload,
+            }
+        }
         case 'LOGIN_SUCCESS':{
 
             return{
@@ -24,8 +36,10 @@ export const authReducer=(state,action)=>{
             return{
                 ...state,
                 islogged:false,
+                name:'',
                 email:'',
                 password:"",
+                photo:'',
                 token:{}
             }
         }

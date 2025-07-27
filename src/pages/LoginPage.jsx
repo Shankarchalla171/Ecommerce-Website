@@ -8,11 +8,12 @@ import Sidebar from "../components/SideBar";
 const API = 'https://api.escuelajs.co/api/v1/auth/login';
 
 const LoginPage = () => {
-  const { islogged, email, password, authDispatch } = useContext(AuthContext);
+  const { islogged,name,email, password, photo,authDispatch } = useContext(AuthContext);
   const { menu, setMenu } = useContext(MenuContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
 
   // Prevent background scrolling when sidebar is open
   useEffect(() => {
@@ -38,7 +39,7 @@ const LoginPage = () => {
     authDispatch({ type: 'PASSWORD', payload: e.target.value });
   };
 
-  const postData = async (email, password) => {
+  const getToken = async (email, password) => {
     try {
       const response = await fetch(API, {
         method: 'POST',
@@ -56,7 +57,24 @@ const LoginPage = () => {
       throw new Error(error.message || 'Network error occurred');
     }
   };
+  const getData=async(token)=>{
+    try {
+      const response=await fetch("https://api.escuelajs.co/api/v1/auth/profile",{
+        headers:{
+           'Authorization': `Bearer ${token.access_token}`,
+           'Content-Type': 'application/json'
+        }
+      });
 
+      if(!response.ok){
+            const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      throw new Error(error.message || 'Network error occurred');
+    }
+  }
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -69,12 +87,16 @@ const LoginPage = () => {
       setLoading(true);
       setError(null);
 
-      const token = await postData(email, password);
+      const token = await getToken(email, password);
 
       if (token?.access_token) {
+        const data=await getData(token);
+        console.log(data);
+        authDispatch({type:'NAME', payload:data.name});
+        authDispatch({type:'PHOTO',payload:data.avatar});
         authDispatch({ type: 'LOGIN_SUCCESS', payload: token.access_token });
         navigate('/');
-        // Note: Using alert is not ideal UX, but keeping for consistency
+        
       } else {
         throw new Error('Invalid response from server');
       }
@@ -111,13 +133,10 @@ const LoginPage = () => {
     // Note: Using alert is not ideal UX, but keeping for consistency
   };
 
-  const handleMenuToggle = () => {
-    setMenu(prev => !prev);
-  };
-
-  const handleSidebarClick = (e) => {
-    e.stopPropagation();
-  };
+ 
+  const GotoSign=()=>{
+    navigate('/signin');
+  }
 
   return (
     <>
@@ -127,17 +146,28 @@ const LoginPage = () => {
         <Sidebar />
 
         {/* Login Form */}
-        <div className="w-full max-w-md mx-auto mt-20 px-4 sm:px-6">
-          <div className="bg-white dark:bg-[#1f1d2b] dark:border-1 dark:border-violet-800 border border-zinc-200 shadow-xl rounded-3xl p-10 sm:p-12 transition-all duration-500 ease-in-out">
+        <div className="w-full max-w-lg mx-auto mt-20 px-4 sm:px-6">
+          <div className="bg-white dark:bg-[#1f1d2b] dark:border-1 dark:border-violet-800 border border-zinc-200 shadow-xl rounded-3xl p-4 sm:p-6 transition-all duration-500 ease-in-out">
 
             <form onSubmit={islogged ? handleLogout : handleLogin} className="space-y-8">
               <div className="space-y-1">
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-center text-zinc-900 dark:text-gray-300 tracking-tight transition-all duration-500 ease-in-out">
-                  {islogged ? "Welcome Back!" : "Sign In"}
+                  {islogged ? "Welcome Back" : "Login In"}
                 </h2>
                 <p className="text-center text-sm text-zinc-500 dark:text-gray-400 transition-all duration-500 ease-in-out">
-                  {islogged ? "You're already logged in." : "Access your account to continue"}
+                  {islogged ? "" : "Access your account to continue"}
                 </p>
+                {islogged && (
+                  <div className="flex flex-col sm:flex-row gap-8 mt-7">
+                    <span>
+                      <img src={photo} alt="user_photo" className="rounded-full" />
+                    </span>
+                    <div className="p-2  flex flex-col justify-center" >
+                      <div className="text-2xl font-bold text-zinc-500 dark:text-gray-400">{name}</div>
+                      <div className="text-md font-bold text-zinc-500 dark:text-gray-400">{email}</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Error Alert */}
@@ -194,7 +224,6 @@ const LoginPage = () => {
                 >
                   {loading ? "Processing..." : islogged ? "Log Out" : "Log In"}
                 </button>
-
                 {!islogged && (
                   <button
                     type="button"
@@ -204,7 +233,12 @@ const LoginPage = () => {
                   >
                     {loading ? "Processing..." : "Log In with Test Credentials"}
                   </button>
+                  
                 )}
+                {!islogged && 
+                (<p className="font-bold  text-blue-700  underline hover:cursor-pointer" onClick={GotoSign}>Create New Account</p>)
+                }
+
               </div>
             </form>
           </div>

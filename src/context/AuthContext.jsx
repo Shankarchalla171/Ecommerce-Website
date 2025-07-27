@@ -3,9 +3,11 @@ import { authReducer } from "../reducers/authReducer";
 
 const initialState = {
   islogged: false,
+  name:'',
   email: '',
   password: '',
-  access_token: ''
+  photo:'',
+  access_token: '',
 };
 
 function setInitialState(){
