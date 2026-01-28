@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { findQuantity } from "../utilities/findQuantity";
 
 const CartCard = ({ product }) => {
   const { id, title, price, images, quantity } = product;
   const { cartDispatch } = useContext(CartContext);
+   const { cart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleRemove = () => {
@@ -26,10 +28,12 @@ const CartCard = ({ product }) => {
   }
   
   const handleDecrement=()=>{
-    cartDispatch({
-      type:'DECREASE',
-      payload:id,
-    })
+    if(findQuantity(cart,id) > 1)
+      cartDispatch({
+        type:'DECREASE',
+        payload:id,
+      })
+    else handleRemove();
   }
   return (
     <div className="flex flex-col sm:flex-row gap-4 items-center bg-zinc-100 p-4 rounded-lg shadow-md w-full dark:bg-[rgb(45,44,44)]">

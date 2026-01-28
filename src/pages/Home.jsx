@@ -54,7 +54,7 @@ const Home = () => {
       }
 
       const data = await response.json();
-      setCategories(Array.isArray(data) ? data : []);
+      setCategories(Array.isArray(data) ? data.slice(0, 5) : []);
     } catch (error) {
       throw new Error(`Failed to fetch categories: ${error.message}`);
     }
